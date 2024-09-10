@@ -1,7 +1,6 @@
 use clap::{Parser, ValueEnum};
 mod models;
-use std::fs::File;
-use std::io::Read;
+use tokio::fs;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
@@ -28,11 +27,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     for _ in 0..args.count {
         println!("Hello {}!", format!("{:?}", args.command));
     }
-    let mut file = File::open("data/example.toml")?;
-
-    // Read the contents of the file into a string
-    let mut contents = String::new();
-    file.read_to_string(&mut contents)?;
+    let contents = fs::read_to_string("data/example.toml").await?;
 
     // Deserialize the TOML string into a MyConfig struct
     let config: models::TomlFile = toml::from_str(&contents)?;
