@@ -1,11 +1,11 @@
-
-
 [[member]]
+id = "0ea5d9fe-c95c-4a90-8fa3-f2bb7190a6a7"
 display = "Display name"
 first_name = "Firstly"
 last_name = "Lastly"
 
 [[member]]
+id = "963d0393-5477-42e8-9066-ec9701049616"
 display = "Somebody else"
 first_name = "Frist"
 last_name = "Last name"

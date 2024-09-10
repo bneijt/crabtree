@@ -1,6 +1,7 @@
 use clap::{Parser, ValueEnum};
+mod update_cmd;
 mod models;
-use tokio::fs;
+use std::path::Path;
 
 /// Simple program to greet a person
 #[derive(Parser, Debug)]
@@ -22,24 +23,10 @@ pub enum Commands {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
+    let _ = Args::parse();
 
-    for _ in 0..args.count {
-        println!("Hello {}!", format!("{:?}", args.command));
-    }
-    //Load the content of the file, update all entries to contain an
-    // id attribute
-    let contents = fs::read_to_string("data/example.toml").await?;
+    // Update all the entries to give them an id
+    let _ = update_cmd::assign_ids(Path::new("data/example.toml")).await;
 
-    // Deserialize the TOML string into a MyConfig struct
-    let mut config: models::TomlFile = toml::from_str(&contents)?;
-
-    for member in config.members.iter_mut() {
-        if member.id.is_none() {
-            member.id = Some(Uuid::new_v4().to_string());
-        }
-    }
-    // Print the config details
-    println!("{:#?}", config);
     Ok(())
 }
