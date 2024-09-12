@@ -1,6 +1,6 @@
 use clap::{Parser, ValueEnum};
-mod update_cmd;
 mod models;
+mod update_cmd;
 use std::path::Path;
 
 /// Simple program to greet a person
@@ -26,7 +26,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let _ = Args::parse();
 
     // Update all the entries to give them an id
-    let _ = update_cmd::assign_ids(Path::new("data/example.toml")).await;
-
+    let database = update_cmd::assign_ids(Path::new("data/example.toml"))
+        .await
+        .unwrap();
+    
     Ok(())
 }
