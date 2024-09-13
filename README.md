@@ -1,7 +1,7 @@
-Crabtree: Technically it's Geneology
+Crabtree: Technically it's Genealogy
 ==========================
 
-Geneology software written in Rust.
+Genealogy software written in Rust with flat data files in TOML format.
 
 Add people in toml format in the `data` folder.
 
