@@ -1,0 +1,28 @@
+[[member]]
+id = "0ea5d9fe-c95c-4a90-8fa3-f2bb7190a6a7"
+display = "James Tailor"
+first_name = "James Jefferson"
+last_name = "Tailor"
+date_of_birth = "1900-15-35"
+
+[[member]]
+id = "8325419d-9081-4520-ae04-ec445ccac2bc"
+display = "Joana Joke"
+first_name = "Joana Francis Miranda"
+last_name = "Joke"
+date_of_birth = "1900-01-01"
+
+[[member]]
+id = "18dfd178-c2be-44de-895f-da2272883985"
+display = "Frank Banana"
+first_name = "Frank Banana"
+last_name = "Joke"
+date_of_birth = "2000-05-20"
+parents = ["0ea5d9fe-c95c-4a90-8fa3-f2bb7190a6a7", "8325419d-9081-4520-ae04-ec445ccac2bc"]
+
+[[member]]
+display = "Francis Frankly Joke"
+first_name = "Francis Frankly"
+last_name = "Joke"
+date_of_birth = "2020-10-10"
+parents = ["0ea5d9fe-c95c-4a90-8fa3-f2bb7190a6a7", "8325419d-9081-4520-ae04-ec445ccac2bc"]

@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use chrono::naive::NaiveDate;
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
@@ -13,4 +14,8 @@ pub struct Member {
     pub display: String,
     pub first_name: String,
     pub last_name: String,
+    pub date_of_birth: Option<NaiveDate>,
+    pub date_of_death: Option<NaiveDate>,
+    pub parents: Option<Vec<String>>,
+    pub sex: Option<String>,
 }
