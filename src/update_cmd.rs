@@ -17,7 +17,9 @@ pub async fn assign_ids(
         }
         //Parents are sorted to allow for hashing for join nodes.
         if member.parents.is_some() {
-            member.parents.as_mut().unwrap().sort();
+            let mut parents = member.parents.as_mut().unwrap();
+            parents.sort();
+            parents.dedup();
         }
     }
     // Write back the toml file to update the contents

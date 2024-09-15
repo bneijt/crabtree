@@ -12,8 +12,8 @@ pub struct TomlFile {
 pub struct Member {
     pub id: Option<String>,
     pub display: String,
-    pub first_name: String,
-    pub last_name: String,
+    pub first_name: Option<String>,
+    pub last_name: Option<String>,
     pub date_of_birth: Option<NaiveDate>,
     pub date_of_death: Option<NaiveDate>,
     pub parents: Option<Vec<String>>,
