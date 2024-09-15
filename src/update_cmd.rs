@@ -15,6 +15,10 @@ pub async fn assign_ids(
         if member.id.is_none() {
             member.id = Some(Uuid::new_v4().to_string());
         }
+        //Parents are sorted to allow for hashing for join nodes.
+        if member.parents.is_some() {
+            member.parents.as_mut().unwrap().sort();
+        }
     }
     // Write back the toml file to update the contents
     let toml_string = toml::to_string(&config)?;

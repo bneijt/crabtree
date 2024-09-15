@@ -10,7 +10,7 @@ use tokio::fs;
 #[command(version, about, long_about = None)]
 struct Args {
     /// Name of the person to greet
-    #[arg(value_enum)]
+    #[arg(value_enum, default_value_t = Commands::Update)]
     command: Commands,
 
     /// Number of times to greet
