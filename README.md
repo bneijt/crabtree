@@ -13,4 +13,4 @@ Run without commands will read from the `data` folder and:
 
 Getting started
 ---------------
-Copy `doc/example.toml` to `data/data.toml`, run `cargo run -- update` and then load `index.html` in a local webserver.
+Copy `doc/example.toml` to `data/data.toml`, run `cargo run -- update` and then load `index.html` in a local web server.

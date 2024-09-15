@@ -17,8 +17,7 @@ pub async fn render_database(database: TomlFile) -> String {
             .parents
             .clone()
             .map(|parents| {
-                let mut joined_node_value = parents.join("|");
-                let hash_result = murmur3_32(&mut Cursor::new(joined_node_value), 0).unwrap();
+                let hash_result = murmur3_32(&mut Cursor::new(parents.join("|")), 0).unwrap();
                 let mut nds: Vec<String> = Vec::new();
                 nds.push(format!("{:x}(⚤)", hash_result));
                 nds.extend(parents.iter().map(|parent_id| format!("{} --- {:x}", parent_id, hash_result)));

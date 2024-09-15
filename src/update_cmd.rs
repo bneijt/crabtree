@@ -17,7 +17,7 @@ pub async fn assign_ids(
         }
         //Parents are sorted to allow for hashing for join nodes.
         if member.parents.is_some() {
-            let mut parents = member.parents.as_mut().unwrap();
+            let parents = member.parents.as_mut().unwrap();
             parents.sort();
             parents.dedup();
         }
