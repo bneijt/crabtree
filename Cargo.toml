@@ -8,6 +8,7 @@ chrono = { version = "0.4.38", features = ["serde"] }
 clap = { version = "4.5.17", features = ["derive"] }
 murmur3 = "0.5.2"
 serde = { version = "1.0.210", features = ["derive"] }
+tera = "1.20.0"
 tokio = { version = "1.40.0", features = ["full"] }
 toml = "0.8.19"
 uuid = { version = "1.10.0", features = ["serde", "v4"] }

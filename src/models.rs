@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use chrono::naive::NaiveDate;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]
 #[serde(deny_unknown_fields)]
@@ -7,7 +7,7 @@ pub struct TomlFile {
     pub member: Vec<Member>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(deny_unknown_fields)]
 pub struct Member {
     pub id: Option<String>,
