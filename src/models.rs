@@ -17,5 +17,11 @@ pub struct Member {
     pub date_of_birth: Option<NaiveDate>,
     pub date_of_death: Option<NaiveDate>,
     pub parents: Option<Vec<String>>,
-    pub sex: Option<String>,
+    pub sex: Option<Sex>,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub enum Sex {
+    Male,
+    Female,
 }
