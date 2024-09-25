@@ -12,7 +12,7 @@ const TEMPLATE: &str = r#"
 flowchart TD
 {% for member in members %}
     {{member.id}}("
-{{member.display}}
+{{member.name}}
 {% if member.date_of_birth %}🎂 {{ member.date_of_birth }}{% endif %}
 {% if member.date_of_death %}🪦 {{ member.date_of_death }}{% endif %}
 {% if member.date_of_birth %}age {{ ages[member.id] }}{% endif %}
@@ -43,19 +43,14 @@ pub async fn render_database(database: TomlFile) -> String {
     let joining_node_duplicates: Vec<JoiningNode> = members
         .iter()
         .flat_map(|member| {
-            let combination_nodes: Vec<JoiningNode> = member
-                .parents
-                .clone()
-                .map(|parents| {
-                    let hash_result = murmur3_32(&mut Cursor::new(parents.join("|")), 0).unwrap();
+            let parents = member.parents.clone();
+            let hash_result = murmur3_32(&mut Cursor::new(parents.join("|")), 0).unwrap();
 
-                    vec![JoiningNode {
-                        id: hash_result.to_string(),
-                        inputs: parents.into_iter().collect(),
-                        outputs: HashSet::from([member.id.clone().unwrap()]),
-                    }]
-                })
-                .unwrap_or(Vec::new());
+            let combination_nodes: Vec<JoiningNode> = vec![JoiningNode {
+                id: hash_result.to_string(),
+                inputs: parents.into_iter().collect(),
+                outputs: HashSet::from([member.id.clone().unwrap()]),
+            }];
             combination_nodes
         })
         .collect();
