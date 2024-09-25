@@ -31,6 +31,8 @@ pub enum Sex {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Event {
     pub participants: Vec<String>,
+    pub date: Option<NaiveDate>,
+    pub place: Option<String>,
     pub event_type: EventType,
 }
 
