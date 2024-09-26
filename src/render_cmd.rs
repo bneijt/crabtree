@@ -4,18 +4,20 @@ use chrono::Datelike;
 
 use murmur3::murmur3_32;
 use serde::Serialize;
+use std::any::Any;
+use crate::models::EventType;
 use std::collections::HashSet;
 use std::{collections::HashMap, io::Cursor};
 use tera::{Context, Tera};
 
 const TEMPLATE: &str = r#"
 flowchart TD
-{% for member in members %}
-    {{member.id}}("
-{{member.name}}
-{% if member.date_of_birth %}🎂 {{ member.date_of_birth }}{% endif %}
-{% if member.date_of_death %}🪦 {{ member.date_of_death }}{% endif %}
-{% if member.date_of_birth %}age {{ ages[member.id] }}{% endif %}
+{% for node in graph_nodes %}
+    {{node.id}}("
+{{node.name}}
+{% if node.date_of_birth %}🎂 {{ node.date_of_birth }}{% endif %}
+{% if node.date_of_death %}🪦 {{ node.date_of_death }}{% endif %}
+{% if node.age %}age {{ node.age }}{% endif %}
 ")
 {% endfor %}
 {% for joining_node in joining_nodes %}
@@ -33,6 +35,15 @@ struct JoiningNode {
     id: String,
     inputs: HashSet<String>,
     outputs: HashSet<String>,
+}
+
+#[derive(Serialize, Clone)]
+struct GraphNode {
+    id: String,
+    name: String,
+    date_of_birth: String,
+    date_of_death: String,
+    age: String,
 }
 
 pub async fn render_database(database: TomlFile) -> String {
@@ -58,6 +69,9 @@ pub async fn render_database(database: TomlFile) -> String {
     //Merge outputs that have the same JoiningNode id
     let mut joining_nodes: HashMap<String, JoiningNode> = HashMap::new();
     for joining_node in joining_node_duplicates {
+        if joining_node.inputs.is_empty() {
+            continue;
+        }
         if joining_nodes.contains_key(&joining_node.id) {
             joining_nodes
                 .get_mut(&joining_node.id)
@@ -69,27 +83,50 @@ pub async fn render_database(database: TomlFile) -> String {
         }
     }
     let today: NaiveDate = chrono::Local::now().naive_local().date();
-
-    let ages: HashMap<String, u32> = members
+    let deaths: HashMap<String, NaiveDate> = database
+        .event
         .iter()
-        .filter(|m| m.date_of_birth.is_some())
+        .filter(|e| e.event_type == EventType::Died)
+        .flat_map(|e| e.participants.iter().map(|p| (p.clone(), e.date.unwrap())))
+        .collect();
+
+    let graph_nodes: Vec<GraphNode> = members
+        .iter()
         .map(|member| {
-            let dob = member.date_of_birth.unwrap();
-            let mut age = today.year() - dob.year();
-            if (today.month(), today.day()) < (dob.month(), dob.day()) {
-                age -= 1;
+            let member_id = member.id.clone().unwrap();
+            let age: String = match member.date_of_birth {
+                Some(dob) => {
+                    let end = deaths.get(&member_id).unwrap_or(&today);
+                    let mut age = end.year() - dob.year();
+                    if (end.month(), end.day()) < (dob.month(), dob.day()) {
+                        age -= 1;
+                    }
+                    age.to_string()
+                }
+                None => String::new(),
+            };
+            GraphNode {
+                id: member_id.clone(),
+                name: member.name.clone(),
+                date_of_birth: member
+                    .date_of_birth
+                    .map(|d| d.to_string())
+                    .unwrap_or(String::from("")),
+                date_of_death: deaths
+                    .get(&member_id)
+                    .map(|d| d.to_string())
+                    .unwrap_or(String::from("")),
+                age,
             }
-            (member.id.clone().unwrap(), age as u32)
         })
         .collect();
 
     let mut context = Context::new();
-    context.insert("members", &members);
+    context.insert("graph_nodes", &graph_nodes);
     context.insert(
         "joining_nodes",
         &joining_nodes.values().collect::<Vec<&JoiningNode>>(),
     );
-    context.insert("ages", &ages);
     // add stuff to context
     let result = Tera::one_off(TEMPLATE, &context, false);
     result.unwrap().replace("\n\n", "\n")

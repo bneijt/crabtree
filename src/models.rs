@@ -36,7 +36,7 @@ pub struct Event {
     pub event_type: EventType,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum EventType {
     Died,
     Married,

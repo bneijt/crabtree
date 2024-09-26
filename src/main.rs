@@ -14,8 +14,8 @@ struct Args {
     command: Commands,
 
     /// Number of times to greet
-    #[arg(short, long, default_value_t = 1)]
-    count: u8,
+    #[arg(short, long, default_value_t = String::from("data/data.toml"))]
+    database: String,
 }
 
 #[derive(ValueEnum, Debug, Clone)]
@@ -25,17 +25,12 @@ pub enum Commands {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let _ = Args::parse();
+    let args = Args::parse();
     // Glob through all .toml files in data folder
-    let data_path = Path::new("data/data.toml");
-    let example_path = Path::new("doc/example.toml");
-    let path = if data_path.exists() {
-        data_path
-    } else {
-        example_path
-    };
+    let data_path = Path::new(args.database.as_str());
     // Update all the entries to give them an id
-    let database = update_cmd::assign_ids(path).await.unwrap();
+    _ = update_cmd::assign_ids(data_path).await.unwrap();
+    let database = update_cmd::load_database(data_path).await.unwrap();
     let result = render_cmd::render_database(database).await;
     // Write to result to dist target folder
     fs::write("target/graph.txt", result.as_bytes()).await?;
